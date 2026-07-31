@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { AphasiaTypeSelector, type AphasiaType } from "@/components/aphasia-type-selector"
-import { useProfile } from "@/contexts/ProfileContext"
+import { useProfile, type AphasiaProfile } from "@/contexts/ProfileContext"
 import { BrocaExperience } from "@/experiences/BrocaExperience"
 import { WernickeExperience } from "@/experiences/WernickeExperience"
 import { GlobalExperience } from "@/experiences/GlobalExperience"
@@ -10,6 +10,18 @@ import { ConductionExperience } from "@/experiences/ConductionExperience"
 import { AnomicExperience } from "@/experiences/AnomicExperience"
 import { PPAExperience } from "@/experiences/PPAExperience"
 import { useState, useEffect } from "react"
+
+// The selector emits display names; the profile store and the experience router
+// both key off short slugs. Without this mapping every type falls through the
+// switch in renderExperience() and renders the Broca layout.
+const APHASIA_TYPE_TO_PROFILE: Record<AphasiaType, AphasiaProfile> = {
+  "Broca's Aphasia": "broca",
+  "Wernicke's Aphasia": "wernicke",
+  "Global Aphasia": "global",
+  "Conduction Aphasia": "conduction",
+  "Anomic Aphasia": "anomic",
+  "Primary Progressive Aphasia (PPA)": "ppa",
+}
 
 // Concept categories shared across all experiences
 const conceptCategories = {
@@ -117,7 +129,7 @@ export default function ConceptToSpeechApp() {
   }
 
   const handleAphasiaTypeSelect = (type: AphasiaType) => {
-    setProfile(type)
+    setProfile(APHASIA_TYPE_TO_PROFILE[type])
     setShowAphasiaSelector(false)
   }
 
